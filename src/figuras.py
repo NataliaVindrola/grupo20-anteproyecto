@@ -7,7 +7,8 @@ Lee reports/sensibilidad_resumen.csv (lo genera `python -m src.sensibilidad`) y 
 
 Uso (desde la raiz del repositorio):
     python -m src.figuras
-Salida: reports/figuras/sensibilidad.png
+Salidas: reports/figuras/sensibilidad.png y, si existe reports/sensibilidad_segmentos.csv,
+         reports/figuras/tabla10_comparacion.png (Tabla 10 con el criterio actual y con el promedio de las dos ventas).
 """
 from __future__ import annotations
 
@@ -20,6 +21,8 @@ import pandas as pd
 
 ENTRADA = Path("reports/sensibilidad_resumen.csv")
 SALIDA = Path("reports/figuras/sensibilidad.png")
+ENTRADA_SEG = Path("reports/sensibilidad_segmentos.csv")
+SALIDA_SEG = Path("reports/figuras/tabla10_comparacion.png")
 
 AZUL, NARANJA = "#2a78d6", "#eb6834"
 TEXTO, SECUNDARIO, GRIS = "#0b0b0b", "#52514e", "#c9c8c3"
@@ -79,5 +82,66 @@ def main() -> None:
     print(SALIDA)
 
 
+def _color_celda(v: float) -> tuple[str, str]:
+    """Azul si gana valor real, naranja si pierde, gris claro cerca de cero. Devuelve (fondo, texto)."""
+    def mezcla(c0, c1, t):
+        a = [int(c0[i:i + 2], 16) for i in (1, 3, 5)]
+        b = [int(c1[i:i + 2], 16) for i in (1, 3, 5)]
+        return "#%02x%02x%02x" % tuple(round(x + (y - x) * t) for x, y in zip(a, b))
+    if v >= 0:
+        fondo = mezcla("#e8f0fa", "#174e80", min(v / 0.18, 1))
+    else:
+        fondo = mezcla("#fbe4d2", "#a8420f", min(-v / 0.06, 1))
+    r, g, b = [int(fondo[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return fondo, "white" if lum < 0.30 else TEXTO
+
+
+def mapas_comparacion() -> None:
+    seg = pd.read_csv(ENTRADA_SEG)
+    seg = seg[seg["corte_dias"] == 180]
+    fig, ejes = plt.subplots(1, 2, figsize=(13, 4.6))
+    casos = [("nominal", "Rango por valor nominal de la 1.ª venta (Tabla 10 actual)"),
+             ("promedio", "Rango por valor real promedio de las dos ventas")]
+    for ax, (crit, titulo) in zip(ejes, casos):
+        d = seg[seg["criterio"] == crit]
+        for i, zona in enumerate(["Norte", "Centro", "Sur"]):
+            for q in range(1, 6):
+                f = d[(d["zona"] == zona) & (d["q"] == q)].iloc[0]
+                fondo, tinta = _color_celda(f["mediana_real"])
+                ax.add_patch(plt.Rectangle((q - 1, 2 - i), 0.96, 0.94, color=fondo))
+                marca = " ✱" if not f["suficiente"] else ""
+                ax.text(q - 0.52, 2 - i + 0.56, coma(100 * f["mediana_real"] + (1e-9 if f["mediana_real"] >= 0 else -1e-9)) + " %", ha="center", va="center",
+                        color=tinta, fontweight="bold", fontsize=13)
+                ax.text(q - 0.52, 2 - i + 0.22, f"n={int(f['n'])}{marca}", ha="center", va="center", color=tinta, fontsize=10.5)
+        z = d[d["zona"] == "Norte"].sort_values("q")
+        cortes = [z["rango_min_musd"].iloc[0]] + list(z["rango_max_musd"])
+        etiquetas = []
+        for q in range(5):
+            if q == 0:
+                etiquetas.append(f"Q1\n≤ {cortes[1]:.0f}")
+            elif q == 4:
+                etiquetas.append(f"Q5\n> {cortes[4]:.0f}")
+            else:
+                etiquetas.append(f"Q{q + 1}\n{cortes[q]:.0f}–{cortes[q + 1]:.0f}")
+        ax.set_xticks([i + 0.48 for i in range(5)], etiquetas)
+        ax.set_yticks([2.47, 1.47, 0.47], ["Norte", "Centro", "Sur"])
+        ax.set_xlim(0, 5); ax.set_ylim(0, 3)
+        ax.tick_params(length=0)
+        ax.set_title(titulo, loc="left", color=TEXTO, fontweight="bold", fontsize=12)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+    fig.text(0.01, 0.045, "Retorno real anual mediano y n pares por segmento, con corte de 180 días. Azul: gana valor real; naranja: pierde.",
+             color=SECUNDARIO, fontsize=10)
+    fig.text(0.01, 0.01, "Rangos en millones de pesos: nominales a la izquierda, de sep-2026 a la derecha. ✱ menos de 100 pares: no reportable.",
+             color=SECUNDARIO, fontsize=10)
+    fig.tight_layout(rect=(0, 0.09, 1, 1))
+    SALIDA_SEG.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(SALIDA_SEG, dpi=200, facecolor="white")
+    print(SALIDA_SEG)
+
+
 if __name__ == "__main__":
     main()
+    if ENTRADA_SEG.exists():
+        mapas_comparacion()
