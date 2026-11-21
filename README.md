@@ -10,6 +10,7 @@ valorizacion, liquidez y rango historico). No incluye modelos de prediccion ni t
 - `src/datos.py`: carga de datos y pesos constantes.
 - `src/tablas.py`: pares de ventas repetidas, segmentos, liquidez (Kaplan-Meier) y rango historico. Genera `reports/pares_filtros.csv` (Tabla 6) y `reports/tablas/`.
 - `src/sensibilidad.py`: repite la valorizacion con otras definiciones del rango de valor y otros cortes de dias (retroalimentacion de la Guia 4).
+- `src/figuras.py`: figura de sensibilidad para el informe (`reports/figuras/sensibilidad.png`), a partir de `reports/sensibilidad_resumen.csv`.
 - `data/*.dvc`: punteros a los datos (compraventas IGAC-SNR e IPC del DANE, base dic-2018 = 100).
 - `reports/`: salidas de referencia de la Guia 4 (`limpieza_resumen.csv`, `pares_filtros.csv`).
 
@@ -20,6 +21,7 @@ pip install -r requirements.txt
 python src/limpieza.py            # Tabla 5  -> reports/limpieza_resumen.csv
 python -m src.tablas              # Tabla 6  -> reports/pares_filtros.csv y reports/tablas/
 python -m src.sensibilidad        # sensibilidad -> reports/sensibilidad_*.csv
+python -m src.figuras             # figura -> reports/figuras/sensibilidad.png
 ```
 
 ## Que debe dar (Guia 4)
