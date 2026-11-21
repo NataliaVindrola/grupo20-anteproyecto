@@ -1,0 +1,13 @@
+﻿.ipynb_checkpoints/
+__pycache__/
+.venv/
+.env
+
+# MLflow y artefactos locales
+mlruns/
+mlflow.db
+*.db
+
+data/*.csv
+data/compraventas_limpio.csv
+reports/tablas/
