@@ -66,11 +66,12 @@ def correr(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     n_base = res.loc[(res["criterio"] == BASE[0]) & (res["corte_dias"] == BASE[1]), "pares"].iloc[0]
     res["pares_vs_base_pct"] = (100 * (res["pares"] / n_base - 1)).round(1)
     b = det[(det["criterio"] == BASE[0]) & (det["corte_dias"] == BASE[1])].set_index(["zona", "q"])["mediana_real"]
-    corr = []
+    corr = {}
     for (c, d), g in det.groupby(["criterio", "corte_dias"]):
         m = g.set_index(["zona", "q"])["mediana_real"]
-        corr.append(round(float(_rangos(b).corr(_rangos(m.reindex(b.index)), method="pearson")), 3))
-    res["similitud_ranking_con_base"] = corr   # Spearman: 1 = mismo orden de los 15 segmentos
+        corr[(c, d)] = round(float(_rangos(b).corr(_rangos(m.reindex(b.index)), method="pearson")), 3)
+    # Spearman: 1 = mismo orden de los 15 segmentos. Se asigna por (criterio, corte), no por posicion.
+    res["similitud_ranking_con_base"] = [corr[(c, d)] for c, d in zip(res["criterio"], res["corte_dias"])]
     return res, det
 
 

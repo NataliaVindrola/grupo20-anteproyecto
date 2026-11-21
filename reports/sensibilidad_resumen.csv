@@ -1,0 +1,17 @@
+criterio,corte_dias,pares,mediana_real_pct,mediana_nominal_pct,pct_pares_perdida_real,segmentos_reportables,mayor_retorno,menor_retorno,pendiente_q1_q5,pares_vs_base_pct,similitud_ranking_con_base
+nominal,30,8696,12.18,24.86,35.5,14,Norte Q2 (28.5 %),Centro Q5 (-3.8 %),-21.0,51.6,0.968
+nominal,90,7784,9.11,21.89,37.6,14,Centro Q2 (24.8 %),Centro Q5 (-4.9 %),-19.14,35.7,0.943
+nominal,180,5738,2.48,13.88,45.0,14,Norte Q2 (17.7 %),Centro Q5 (-5.9 %),-14.26,0.0,1.0
+nominal,365,2922,-2.72,8.21,57.9,12,Centro Q2 (8.4 %),Centro Q5 (-7.3 %),-8.17,-49.1,0.791
+constantes,30,8696,12.18,24.86,35.5,14,Sur Q1 (31.1 %),Centro Q5 (-3.8 %),-23.7,51.6,0.95
+constantes,90,7784,9.11,21.89,37.6,14,Sur Q1 (27.4 %),Centro Q5 (-4.9 %),-21.28,35.7,0.957
+constantes,180,5738,2.48,13.88,45.0,14,Sur Q1 (19.0 %),Centro Q5 (-6.4 %),-15.74,0.0,0.971
+constantes,365,2922,-2.72,8.21,57.9,11,Centro Q2 (9.3 %),Centro Q5 (-7.0 %),-8.06,-49.1,0.864
+segunda,30,8696,12.18,24.86,35.5,14,Sur Q2 (25.6 %),Norte Q1 (-3.5 %),5.99,51.6,0.096
+segunda,90,7784,9.11,21.89,37.6,14,Sur Q2 (23.8 %),Centro Q1 (-3.9 %),4.65,35.7,0.143
+segunda,180,5738,2.48,13.88,45.0,14,Sur Q3 (14.4 %),Norte Q1 (-5.1 %),2.31,0.0,0.154
+segunda,365,2922,-2.72,8.21,57.9,13,Centro Q3 (5.3 %),Norte Q1 (-6.9 %),2.86,-49.1,-0.15
+promedio,30,8696,12.18,24.86,35.5,14,Centro Q3 (25.4 %),Centro Q5 (-2.2 %),-7.06,51.6,0.761
+promedio,90,7784,9.11,21.89,37.6,14,Centro Q3 (23.1 %),Centro Q5 (-3.2 %),-6.51,35.7,0.693
+promedio,180,5738,2.48,13.88,45.0,14,Centro Q3 (12.9 %),Centro Q5 (-4.9 %),-5.02,0.0,0.804
+promedio,365,2922,-2.72,8.21,57.9,12,Centro Q3 (5.7 %),Centro Q5 (-5.9 %),-1.54,-49.1,0.493
